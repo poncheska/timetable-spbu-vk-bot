@@ -25,13 +25,18 @@ func main() {
 	}
 
 	for update := range updates {
-		if update.Message == nil || !update.IsNewMessage() || update.Message.Outbox(){
+		if update.Message == nil || !update.IsNewMessage() || update.Message.Outbox() {
 			continue
 		}
 
 		log.Printf("%s", update.Message.String())
-		if update.Message.Text == "/start" {
-			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID), "Hello!"))
+		switch update.Message.Text {
+		case "/start":
+			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
+				"Welcome to the club buddy!"))
+		default:
+			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
+				"Я тебя не понял или ты быканул!?"))
 		}
 
 	}
