@@ -3,13 +3,14 @@ package main
 import (
 	"fmt"
 	vkapi "github.com/himidori/golang-vk-api"
+	"os"
 )
 
-var VKAdminID = 102727269
-var VKToken = "b65675104740f1079ec2d76cfc1c36606e3d489defc69e3fc8f23db340eba4a8c2cbacef0c903a6309b69"
+//var VKAdminID = 102727269
 
 
 func main() {
+	VKToken := os.Getenv("BOT_TOKEN")
 	client, err := vkapi.NewVKClientWithToken(VKToken, nil, false)
 	if err != nil {
 		panic(err)
