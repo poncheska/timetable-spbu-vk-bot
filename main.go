@@ -22,4 +22,6 @@ func main() {
 	client.AddLongpollCallback("msgout", func(m *vkapi.LongPollMessage) {
 		fmt.Printf("sent message to uid %d\n", m.UserID)
 	})
+
+	client.ListenLongPollServer()
 }
