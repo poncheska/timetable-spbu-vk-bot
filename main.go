@@ -1,28 +1,37 @@
 package main
 
 import (
-	"fmt"
-	vkapi "github.com/himidori/golang-vk-api"
-	"os"
+	vkapi "github.com/Dimonchik0036/vk-api"
+	"log"
 )
 
-//var VKAdminID = 102727269
-
-
 func main() {
-	VKToken := os.Getenv("BOT_TOKEN")
-	client, err := vkapi.NewVKClientWithToken(VKToken, nil, false)
+	//client, err := vkapi.NewClientFromLogin("<username>", "<password>", vkapi.ScopeMessages)
+	client, err := vkapi.NewClientFromToken("<access_token>")
 	if err != nil {
-		panic(err)
+		log.Panic(err)
 	}
-	// listening received messages
-	client.AddLongpollCallback("msgin", func(m *vkapi.LongPollMessage) {
-		fmt.Printf("new message received from uid %d\n", m.UserID)
-	})
 
-	client.AddLongpollCallback("msgout", func(m *vkapi.LongPollMessage) {
-		fmt.Printf("sent message to uid %d\n", m.UserID)
-	})
+	client.Log(true)
 
-	client.ListenLongPollServer()
+	if err := client.InitLongPoll(0, 2); err != nil {
+		log.Panic(err)
+	}
+
+	updates, _, err := client.GetLPUpdatesChan(100, vkapi.LPConfig{25, vkapi.LPModeAttachments})
+	if err != nil {
+		log.Panic(err)
+	}
+
+	for update := range updates {
+		if update.Message == nil || !update.IsNewMessage() || update.Message.Outbox(){
+			continue
+		}
+
+		log.Printf("%s", update.Message.String())
+		if update.Message.Text == "/start" {
+			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID), "Hello!"))
+		}
+
+	}
 }
