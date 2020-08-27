@@ -1,1 +1,1 @@
-worker: go build main.go
+worker: vk-timetable-bot
