@@ -3,8 +3,8 @@ package main
 import "github.com/nikepan/govkbot/v2"
 import "log"
 
-var VKAdminID = 3759927
-var VKToken = "efjr98j9fj8jf4j958jj4985jfj9joijerf0fj548jf94jfiroefije495jf48"
+var VKAdminID = 102727269
+var VKToken = "21dd40b0ffc688db14922d4e80bf4584791de3952bbb6ffae30f39e049fdfd7ebbc6373a0135737865532"
 
 func helpHandler(m *govkbot.Message) (reply string) {
 	return "help received"
