@@ -3,11 +3,12 @@ package main
 import (
 	vkapi "github.com/Dimonchik0036/vk-api"
 	"log"
+	"os"
 )
 
 func main() {
 	//client, err := vkapi.NewClientFromLogin("<username>", "<password>", vkapi.ScopeMessages)
-	client, err := vkapi.NewClientFromToken("<access_token>")
+	client, err := vkapi.NewClientFromToken(os.Getenv("BOT_TOKEN"))
 	if err != nil {
 		log.Panic(err)
 	}
