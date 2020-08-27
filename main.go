@@ -4,7 +4,7 @@ import "github.com/nikepan/govkbot/v2"
 import "log"
 
 var VKAdminID = 102727269
-var VKToken = "21dd40b0ffc688db14922d4e80bf4584791de3952bbb6ffae30f39e049fdfd7ebbc6373a0135737865532"
+var VKToken = "b65675104740f1079ec2d76cfc1c36606e3d489defc69e3fc8f23db340eba4a8c2cbacef0c903a6309b69"
 
 func helpHandler(m *govkbot.Message) (reply string) {
 	return "help received"
