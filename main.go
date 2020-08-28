@@ -100,7 +100,7 @@ func main() {
 }
 
 func GetUsers() *TimetableUsers {
-	users := &TimetableUsers{}
+	users := &TimetableUsers{Users: make([]TimetableUser,0,0)}
 	bytes, err := ioutil.ReadFile(usersFilename)
 	if err != nil {
 		log.Println("GetUsers: "+ err.Error())
