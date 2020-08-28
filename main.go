@@ -37,6 +37,11 @@ func main() {
 		default:
 			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 				"Я тебя не понял или ты быканул!?"))
+			file, err := os.Open("kaban.jpg")
+			if err != nil {
+				log.Panic(err)
+			}
+			client.SendPhoto(vkapi.NewDstFromUserID(update.Message.FromID), file)
 		}
 
 	}
