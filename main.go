@@ -103,10 +103,12 @@ func GetUsers() *TimetableUsers {
 	users := &TimetableUsers{}
 	bytes, err := ioutil.ReadFile(usersFilename)
 	if err != nil {
+		log.Println("GetUsers: "+ err.Error())
 		return users
 	}
 	err = json.Unmarshal(bytes, users)
 	if err != nil {
+		log.Println("GetUsers: "+ err.Error())
 		return users
 	}
 	return users
