@@ -80,7 +80,8 @@ func main() {
 				bytes, err := ioutil.ReadFile(usersFilename)
 				if err != nil{
 					client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
-						"Файл "+usersFilename+" недоступен!!!"))
+						"Файл "+usersFilename+" недоступен!!!\n"+err.Error()))
+					continue
 				}
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 					fmt.Sprintf("json: \n%v\n struct: \n%v\n", string(bytes), users.Users)))
