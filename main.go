@@ -116,7 +116,8 @@ func GetUsers() *TimetableUsers {
 
 func (tu *TimetableUsers) SetUsers() {
 	bytes, _ := json.MarshalIndent(tu,"","\t")
-	ioutil.WriteFile(usersFilename, bytes, os.FileMode(int(0777)))
+	err := ioutil.WriteFile(usersFilename, bytes, os.FileMode(int(0777)))
+	log.Println("SetUsers: "+ err.Error())
 }
 
 func (tu *TimetableUsers) AddUser(id int64, link string) {
