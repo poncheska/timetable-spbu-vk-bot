@@ -75,7 +75,7 @@ func main() {
 				"Alright!"))
 
 
-		case update.Message.Text[:4] == "/users":
+		case update.Message.Text == "/users":
 			if update.Message.FromID == adminId{
 				bytes, err := ioutil.ReadFile(usersFilename)
 				if err != nil{
