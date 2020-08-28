@@ -42,7 +42,8 @@ func main() {
 			if err != nil {
 				log.Panic(err)
 			}
-			client.SendPhoto(vkapi.NewDstFromUserID(update.Message.FromID), file)
+			client.SendPhoto(vkapi.NewDstFromUserID(update.Message.FromID),
+				vkapi.FileBytes{Bytes: file, Name: "kaban.jpg"})
 		}
 
 	}
