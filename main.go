@@ -2,6 +2,7 @@ package main
 
 import (
 	vkapi "github.com/Dimonchik0036/vk-api"
+	"io/ioutil"
 	"log"
 	"os"
 )
@@ -37,7 +38,7 @@ func main() {
 		default:
 			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 				"Я тебя не понял или ты быканул!?"))
-			file, err := os.Open("kaban.jpg")
+			file, err := ioutil.ReadFile("kaban.jpg")
 			if err != nil {
 				log.Panic(err)
 			}
