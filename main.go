@@ -2,9 +2,22 @@ package main
 
 import (
 	vkapi "github.com/Dimonchik0036/vk-api"
-	"io/ioutil"
 	"log"
 	"os"
+	"regexp"
+)
+
+type TimetableUser struct {
+	ID     int64 `json:"id"`
+	TTLink string `json:"link"`
+}
+
+type TimetableUsers struct {
+	Users []TimetableUsers `json:"users"`
+}
+
+var (
+	regRegexp = regexp.MustCompile("\\/reg https:\\/\\/timetable.spbu.ru\\/\\S+")
 )
 
 func main() {
@@ -31,19 +44,24 @@ func main() {
 		}
 
 		log.Printf("%s", update.Message.String())
-		switch update.Message.Text {
-		case "/start":
+		switch {
+		case update.Message.Text[:3] == "/reg":
+			if !regRegexp.MatchString(update.Message.Text){
+				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
+					"Invalid link!"))
+				continue
+			}
 			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
-				"Welcome to the club buddy!"))
+				"Alright!"))
 		default:
 			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 				"Я тебя не понял или ты быканул!?"))
-			file, err := ioutil.ReadFile("kaban.jpg")
-			if err != nil {
-				log.Panic(err)
-			}
-			client.SendPhoto(vkapi.NewDstFromUserID(update.Message.FromID),
-				vkapi.FileBytes{Bytes: file, Name: "kaban.jpg"})
+			//file, err := ioutil.ReadFile("kaban.jpg")
+			//if err != nil {
+			//	log.Panic(err)
+			//}
+			//client.SendPhoto(vkapi.NewDstFromUserID(update.Message.FromID),
+			//	vkapi.FileBytes{Bytes: file, Name: "kaban.jpg"})
 		}
 
 	}
