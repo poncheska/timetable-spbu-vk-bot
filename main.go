@@ -45,7 +45,7 @@ func main() {
 		log.Panic(err)
 	}
 
-	users := &TimetableUsers{Users: make([]TimetableUser,0,0)}
+	users := GetUsers()
 
 	for update := range updates {
 		if update.Message == nil || !update.IsNewMessage() || update.Message.Outbox() {
@@ -66,11 +66,11 @@ func main() {
 
 		case update.Message.Text[:4] == "/reg":
 			if !regRegexp.MatchString(update.Message.Text) {
-				users.AddUser(update.Message.FromID, update.Message.Text[5:])
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 					"Invalid link!"))
 				continue
 			}
+			users.AddUser(update.Message.FromID, update.Message.Text[5:])
 			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 				"Alright!"))
 
