@@ -45,7 +45,7 @@ func main() {
 		log.Panic(err)
 	}
 
-	users := GetUsers()
+	users := &TimetableUsers{Users: make([]TimetableUser,0,0)}
 
 	for update := range updates {
 		if update.Message == nil || !update.IsNewMessage() || update.Message.Outbox() {
