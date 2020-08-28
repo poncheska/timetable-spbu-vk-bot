@@ -18,12 +18,12 @@ type TimetableUser struct {
 
 type TimetableUsers struct {
 	Users []TimetableUser `json:"users"`
-	Mu    sync.Mutex       `json:"-"`
+	Mu    sync.Mutex      `json:"-"`
 }
 
 var (
-	regRegexp = regexp.MustCompile("^\\/reg https:\\/\\/timetable.spbu.ru\\/\\S+$")
-	adminId = int64(102727269)
+	regRegexp     = regexp.MustCompile("^\\/reg https:\\/\\/timetable.spbu.ru\\/\\S+$")
+	adminId       = int64(102727269)
 	usersFilename = "users.json"
 )
 
@@ -54,7 +54,6 @@ func main() {
 
 		log.Printf("%s", update.Message.String())
 
-
 		switch {
 		case update.Message.Text == "/info":
 			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
@@ -62,7 +61,6 @@ func main() {
 					"(где ссылка указывает на расписание на текущую неделю\n"+
 					"и не должна содержать дату на конце, пример ссылки:\n"+
 					"\"https://timetable.spbu.ru/CHEM/StudentGroupEvents/Primary/276448\")"))
-
 
 		case update.Message.Text[:4] == "/reg":
 			if !regRegexp.MatchString(update.Message.Text) {
@@ -74,22 +72,30 @@ func main() {
 			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 				"Alright!"))
 
-
 		case update.Message.Text == "/users":
-			if update.Message.FromID == adminId{
+			if update.Message.FromID == adminId {
 				bytes, err := ioutil.ReadFile(usersFilename)
-				if err != nil{
+				if err != nil {
 					client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 						"Файл "+usersFilename+" недоступен!!!\n"+err.Error()))
 					continue
 				}
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 					fmt.Sprintf("json: \n%v\n struct: \n%v\n", string(bytes), users.Users)))
-			}else{
+			} else {
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 					"Ты не админ("))
 			}
 
+		case update.Message.Text[:5] == "/load":
+			json := update.Message.Text[6:]
+			err := ioutil.WriteFile(usersFilename, []byte(json), os.FileMode(int(0777)))
+			if err != nil {
+				log.Println("load: " + err.Error())
+			}
+			users = GetUsers()
+			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
+				"Юзеры загружены"))
 
 		default:
 			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
@@ -100,22 +106,22 @@ func main() {
 }
 
 func GetUsers() *TimetableUsers {
-	users := &TimetableUsers{Users: make([]TimetableUser,0,0)}
+	users := &TimetableUsers{Users: make([]TimetableUser, 0, 0)}
 	bytes, err := ioutil.ReadFile(usersFilename)
 	if err != nil {
-		log.Println("GetUsers: "+ err.Error())
+		log.Println("GetUsers: " + err.Error())
 		return users
 	}
 	err = json.Unmarshal(bytes, users)
 	if err != nil {
-		log.Println("GetUsers: "+ err.Error())
+		log.Println("GetUsers: " + err.Error())
 		return users
 	}
 	return users
 }
 
 func (tu *TimetableUsers) SetUsers() {
-	bytes, err := json.MarshalIndent(tu,"","\t")
+	bytes, err := json.MarshalIndent(tu, "", "\t")
 	if err != nil {
 		log.Println("SetUsers: " + err.Error())
 	}
@@ -126,10 +132,10 @@ func (tu *TimetableUsers) SetUsers() {
 }
 
 func (tu *TimetableUsers) AddUser(id int64, link string) {
-	for i, u := range tu.Users{
-		if u.ID == id{
-			tu.Users[i] = tu.Users[len(tu.Users) - 1]
-			tu.Users = tu.Users[:len(tu.Users) - 1]
+	for i, u := range tu.Users {
+		if u.ID == id {
+			tu.Users[i] = tu.Users[len(tu.Users)-1]
+			tu.Users = tu.Users[:len(tu.Users)-1]
 		}
 	}
 	tu.Mu.Lock()
