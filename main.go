@@ -45,7 +45,7 @@ func main() {
 
 		log.Printf("%s", update.Message.String())
 		switch {
-		case update.Message.Text[:3] == "/reg":
+		case update.Message.Text[:4] == "/reg":
 			if !regRegexp.MatchString(update.Message.Text){
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 					"Invalid link!"))
