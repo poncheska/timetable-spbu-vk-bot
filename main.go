@@ -48,8 +48,9 @@ func main() {
 		case update.Message.Text == "/info":
 			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 				"Для регистрации введите \"/reg https://timetable.spbu.ru/...\"\n" +
-				"(где ссылка указывает на расписание на текущую неделю, пример:\n" +
-				"\"https://timetable.spbu.ru/CHEM/StudentGroupEvents/Primary/276448)\")"))
+				"(где ссылка указывает на расписание на текущую неделю\n" +
+				"и не должна содержать дату на конце , пример ссылки:\n" +
+				"\"https://timetable.spbu.ru/CHEM/StudentGroupEvents/Primary/276448\")"))
 		case update.Message.Text[:4] == "/reg":
 			if !regRegexp.MatchString(update.Message.Text){
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
