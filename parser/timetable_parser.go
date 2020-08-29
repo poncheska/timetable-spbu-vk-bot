@@ -61,7 +61,7 @@ func ParseTimetable(link string) (*Timetable, error) {
 		tt.Days = append(tt.Days, d)
 	})
 
-	header := http.Header{}
+	header := http.Header{"User-Agent": []string{c.UserAgent}}
 	header.Set("Accept-Language", "ru")
 	err := c.Request("GET", link, nil, nil, header)
 
