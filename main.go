@@ -9,6 +9,7 @@ import (
 	"os"
 	"regexp"
 	"sync"
+	"vk-timetable-bot/parser"
 )
 
 type TimetableUser struct {
@@ -60,7 +61,8 @@ func main() {
 				"Для регистрации введите \"/reg https://timetable.spbu.ru/...\"\n"+
 					"(где ссылка указывает на расписание на текущую неделю\n"+
 					"и не должна содержать дату на конце, пример ссылки:\n"+
-					"\"https://timetable.spbu.ru/CHEM/StudentGroupEvents/Primary/276448\")"))
+					"\"https://timetable.spbu.ru/CHEM/StudentGroupEvents/Primary/276448\".\n" +
+				"После регестрации используй \"/tt\" для получения расписания.)"))
 
 		case update.Message.Text[:4] == "/reg":
 			if !regRegexp.MatchString(update.Message.Text) {
@@ -88,14 +90,43 @@ func main() {
 			}
 
 		case update.Message.Text[:5] == "/load":
-			json := update.Message.Text[6:]
-			err := ioutil.WriteFile(usersFilename, []byte(json), os.FileMode(int(0777)))
-			if err != nil {
-				log.Println("load: " + err.Error())
+			if update.Message.FromID == adminId {
+				jsn := update.Message.Text[6:]
+				err := ioutil.WriteFile(usersFilename, []byte(jsn), os.FileMode(int(0777)))
+				if err != nil {
+					log.Println("load: " + err.Error())
+				}
+				users = GetUsers()
+				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
+					"Юзеры загружены"))
+			} else {
+				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
+					"Ты не админ("))
 			}
-			users = GetUsers()
-			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
-				"Юзеры загружены"))
+
+		case update.Message.Text == "/tt":
+			flag := true
+			link := ""
+			for _, u := range users.Users{
+				if u.ID == update.Message.FromID{
+					link = u.TTLink
+					flag = false
+					break
+				}
+			}
+			if flag{
+				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
+					"Ты не зарегистрирован"))
+			}
+			tt, err := parser.ParseTimetable(link)
+			if err != err || tt == nil{
+				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
+					"Что-то не так с твоей ссылкой зарегистрируйся заново"))
+				continue
+			}
+			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID), tt.GetString()))
+
+
 
 		default:
 			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
