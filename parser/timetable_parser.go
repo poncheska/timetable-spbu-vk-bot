@@ -87,11 +87,11 @@ func (d Day) GetString() []string {
 	counter := 0
 	buf.WriteString("________" + d.Date + "________\n")
 	for j, les := range d.Lessons {
-		if counter == 4 {
+		if counter == 3 {
 			res = append(res, buf.String())
 			buf = bytes.Buffer{}
 		}
-		buf.WriteString(fmt.Sprintf("<>%v.%v (%v)\n----Место: %v\n----Препод.: %v\n",
+		buf.WriteString(fmt.Sprintf("<>%v.%v\n----Время:%v\n----Место: %v\n----Препод.: %v\n",
 			j+1, les.Type, les.Time, les.Place, les.Teacher))
 		counter++
 	}
