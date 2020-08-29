@@ -82,7 +82,7 @@ func main() {
 					continue
 				}
 				client.SendDoc(vkapi.NewDstFromUserID(update.Message.FromID),"users",
-					vkapi.FileBytes{Bytes: bytes, Name: usersFilename})
+					vkapi.FileBytes{Bytes: bytes, Name: "users.txt"})
 			} else {
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 					"Ты не админ("))
