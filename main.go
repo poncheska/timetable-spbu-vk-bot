@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	vkapi "github.com/Dimonchik0036/vk-api"
 	"io/ioutil"
 	"log"
@@ -82,7 +81,8 @@ func main() {
 						"Файл "+usersFilename+" недоступен!!!\n"+err.Error()))
 					continue
 				}
-				client.SendDoc(vkapi.NewDstFromUserID(update.Message.FromID),"users", "users.json")
+				client.SendDoc(vkapi.NewDstFromUserID(update.Message.FromID),"users",
+					vkapi.FileBytes{Bytes: bytes, Name: usersFilename})
 			} else {
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 					"Ты не админ("))
