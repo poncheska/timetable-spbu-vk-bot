@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/gocolly/colly"
-	"log"
 	"net/http"
 	"regexp"
 )
@@ -97,6 +96,5 @@ func (d Day) GetString() []string {
 		counter++
 	}
 	res = append(res, buf.String())
-	log.Println(res)
 	return res
 }

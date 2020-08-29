@@ -8,6 +8,7 @@ import (
 	"os"
 	"regexp"
 	"sync"
+	"time"
 	"vk-timetable-bot/parser"
 )
 
@@ -133,6 +134,8 @@ func main() {
 				strings := d.GetString()
 				for _, str := range strings {
 					client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID), str))
+					log.Println("++++++",str)
+					time.Sleep(time.Duration(10))
 				}
 			}
 
