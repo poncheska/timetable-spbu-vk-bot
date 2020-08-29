@@ -74,7 +74,7 @@ func (tt *Timetable) GetString() string {
 	for _, day := range tt.Days {
 		buf.WriteString("________" + day.Date + "________\n")
 		for j, les := range day.Lessons {
-			buf.WriteString(fmt.Sprintf("<>%v.%v\n----Время: %v\n----Место: %v\n----Препод.: %v\n",
+			buf.WriteString(fmt.Sprintf("<>%v.%v (%v)\n----Место: %v\n----Препод.: %v\n",
 				j+1, les.Type, les.Time, les.Place, les.Teacher))
 		}
 	}
@@ -85,7 +85,7 @@ func (d Day) GetString() string {
 	buf := bytes.Buffer{}
 	buf.WriteString("________" + d.Date + "________\n")
 	for j, les := range d.Lessons {
-		buf.WriteString(fmt.Sprintf("<>%v.%v\n----Время: %v\n----Место: %v\n----Препод.: %v\n",
+		buf.WriteString(fmt.Sprintf("<>%v.%v (%v)\n----Место: %v\n----Препод.: %v\n",
 			j+1, les.Type, les.Time, les.Place, les.Teacher))
 	}
 	return buf.String()
