@@ -60,10 +60,10 @@ func main() {
 				"Для регистрации введите \"/reg https://timetable.spbu.ru/...\"\n"+
 					"(где ссылка указывает на расписание на текущую неделю\n"+
 					"и не должна содержать дату на конце, пример ссылки:\n"+
-					"\"https://timetable.spbu.ru/CHEM/StudentGroupEvents/Primary/276448\".)\n" +
-				"После регестрации используй \"/tt\" для получения расписания."))
+					"\"https://timetable.spbu.ru/CHEM/StudentGroupEvents/Primary/276448\".)\n"+
+					"После регестрации используй \"/tt\" для получения расписания."))
 
-		case StringStartsFrom(update.Message.Text,"/reg"):
+		case StringStartsFrom(update.Message.Text, "/reg"):
 			if !regRegexp.MatchString(update.Message.Text) {
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 					"Invalid link!"))
@@ -81,14 +81,14 @@ func main() {
 						"Файл "+usersFilename+" недоступен!!!\n"+err.Error()))
 					continue
 				}
-				client.SendDoc(vkapi.NewDstFromUserID(update.Message.FromID),"users",
+				client.SendDoc(vkapi.NewDstFromUserID(update.Message.FromID), "users",
 					vkapi.FileBytes{Bytes: bytes, Name: "users.txt"})
 			} else {
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
-					"Ты не админ("))
+					"Ты не админ(("))
 			}
 
-		case StringStartsFrom(update.Message.Text,"/load"):
+		case StringStartsFrom(update.Message.Text, "/load"):
 			if update.Message.FromID == adminId {
 				jsn := update.Message.Text[6:]
 				err := ioutil.WriteFile(usersFilename, []byte(jsn), os.FileMode(int(0777)))
@@ -100,43 +100,41 @@ func main() {
 					"Юзеры загружены"))
 			} else {
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
-					"Ты не админ("))
+					"Ты не админ(("))
 			}
 
 		case update.Message.Text == "/tt":
 			log.Println(cap(users.Users), len(users.Users))
 			flag := true
 			link := ""
-			for _, u := range users.Users{
+			for _, u := range users.Users {
 				log.Println(u)
-				if u.ID == update.Message.FromID{
+				if u.ID == update.Message.FromID {
 					log.Println(u)
 					link = u.TTLink
 					flag = false
 					break
 				}
 			}
-			if flag{
+			if flag {
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 					"Ты не зарегистрирован"))
 				continue
 			}
 			tt, err := parser.ParseTimetable(link)
-			if err != nil || tt == nil{
+			if err != nil || tt == nil {
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 					"Что-то не так с твоей ссылкой зарегистрируйся заново"))
 				continue
 			}
 			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 				"Расписание на неделю:\n"))
-			for _, d := range tt.Days{
+			for _, d := range tt.Days {
 				strings := d.GetString()
 				for _, str := range strings {
 					client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID), str))
 				}
 			}
-
-
 
 		default:
 			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
@@ -185,12 +183,12 @@ func (tu *TimetableUsers) AddUser(id int64, link string) {
 	tu.Mu.Unlock()
 }
 
-func StringStartsFrom(str, beg string)bool{
-	if len(str) < len(beg){
+func StringStartsFrom(str, beg string) bool {
+	if len(str) < len(beg) {
 		return false
-	}else {
-		for i:=0;i<len(beg);i++{
-			if str[i]!=beg[i]{
+	} else {
+		for i := 0; i < len(beg); i++ {
+			if str[i] != beg[i] {
 				return false
 			}
 		}
