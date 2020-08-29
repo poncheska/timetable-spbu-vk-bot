@@ -217,7 +217,7 @@ func SetJson(grpcAddress string) {
 	client := vault.NewJsonVaultClient(grpcConn)
 
 	res, _ := client.Get(context.Background(), &vault.Nothing{})
-	if res.Data != nil {
+	if res != nil {
 		ioutil.WriteFile(UsersFilename, res.Data, os.FileMode(int(0777)))
 	}
 }
