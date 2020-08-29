@@ -107,6 +107,11 @@ func main() {
 		case update.Message.Text == "/tt":
 			flag := true
 			link := ""
+			if len(users.Users) == 0{
+				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
+					"Ты не зарегистрирован"))
+				continue
+			}
 			for _, u := range users.Users{
 				log.Println(u)
 				if u.ID == update.Message.FromID{
