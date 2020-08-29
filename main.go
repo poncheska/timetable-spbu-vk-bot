@@ -64,7 +64,7 @@ func main() {
 					"\"https://timetable.spbu.ru/CHEM/StudentGroupEvents/Primary/276448\".)\n" +
 				"После регестрации используй \"/tt\" для получения расписания."))
 
-		case update.Message.Text[:4] == "/reg":
+		case StringStartsFrom(update.Message.Text,"/reg"):
 			if !regRegexp.MatchString(update.Message.Text) {
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 					"Invalid link!"))
@@ -89,7 +89,7 @@ func main() {
 					"Ты не админ("))
 			}
 
-		case update.Message.Text[:5] == "/load":
+		case StringStartsFrom(update.Message.Text,"/load"):
 			if update.Message.FromID == adminId {
 				jsn := update.Message.Text[6:]
 				err := ioutil.WriteFile(usersFilename, []byte(jsn), os.FileMode(int(0777)))
@@ -108,11 +108,6 @@ func main() {
 			log.Println(cap(users.Users), len(users.Users))
 			flag := true
 			link := ""
-			if len(users.Users) == 0{
-				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
-					"Ты не зарегистрирован"))
-				continue
-			}
 			for _, u := range users.Users{
 				log.Println(u)
 				if u.ID == update.Message.FromID{
@@ -182,4 +177,17 @@ func (tu *TimetableUsers) AddUser(id int64, link string) {
 	tu.Users = append(tu.Users, TimetableUser{id, link})
 	tu.SetUsers()
 	tu.Mu.Unlock()
+}
+
+func StringStartsFrom(str, beg string)bool{
+	if len(str) < len(beg){
+		return false
+	}else {
+		for i:=0;i<len(beg);i++{
+			if str[i]!=beg[i]{
+				return false
+			}
+		}
+		return true
+	}
 }
