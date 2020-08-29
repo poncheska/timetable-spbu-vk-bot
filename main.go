@@ -61,8 +61,8 @@ func main() {
 				"Для регистрации введите \"/reg https://timetable.spbu.ru/...\"\n"+
 					"(где ссылка указывает на расписание на текущую неделю\n"+
 					"и не должна содержать дату на конце, пример ссылки:\n"+
-					"\"https://timetable.spbu.ru/CHEM/StudentGroupEvents/Primary/276448\".\n" +
-				"После регестрации используй \"/tt\" для получения расписания.)"))
+					"\"https://timetable.spbu.ru/CHEM/StudentGroupEvents/Primary/276448\".)\n" +
+				"После регестрации используй \"/tt\" для получения расписания."))
 
 		case update.Message.Text[:4] == "/reg":
 			if !regRegexp.MatchString(update.Message.Text) {
@@ -124,7 +124,7 @@ func main() {
 					"Что-то не так с твоей ссылкой зарегистрируйся заново"))
 				continue
 			}
-			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID), tt.GetString()))
+			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID), "tt.GetString()"))
 
 
 
