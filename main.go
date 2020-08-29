@@ -108,7 +108,9 @@ func main() {
 			flag := true
 			link := ""
 			for _, u := range users.Users{
+				log.Println(u)
 				if u.ID == update.Message.FromID{
+					log.Println(u)
 					link = u.TTLink
 					flag = false
 					break
@@ -120,7 +122,7 @@ func main() {
 				continue
 			}
 			tt, err := parser.ParseTimetable(link)
-			if err != err || tt == nil{
+			if err != nil || tt == nil{
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 					"Что-то не так с твоей ссылкой зарегистрируйся заново"))
 				continue
