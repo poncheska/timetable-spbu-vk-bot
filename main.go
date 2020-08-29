@@ -128,7 +128,11 @@ func main() {
 					"Что-то не так с твоей ссылкой зарегистрируйся заново"))
 				continue
 			}
-			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID), "tt.GetString()"))
+			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
+				"Расписание на неделю:\n"))
+			for _, d := range tt.Days{
+				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID), d.GetString()))
+			}
 
 
 

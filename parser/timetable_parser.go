@@ -68,15 +68,25 @@ func ParseTimetable(link string) (*Timetable, error) {
 	return tt, err
 }
 
-func (tt *Timetable) GetString() string{
+func (tt *Timetable) GetString() string {
 	buf := bytes.Buffer{}
 	buf.WriteString("Расписание на неделю:\n")
-	for _, day := range tt.Days{
+	for _, day := range tt.Days {
 		buf.WriteString(day.Date + "\n")
-		for j, les := range day.Lessons{
+		for j, les := range day.Lessons {
 			buf.WriteString(fmt.Sprintf("---%v.%v\n------Время:%v\n------Место:%v\n------Препод.:%v\n",
 				j+1, les.Type, les.Time, les.Place, les.Teacher))
 		}
+	}
+	return buf.String()
+}
+
+func (d Day) GetString() string {
+	buf := bytes.Buffer{}
+	buf.WriteString(d.Date + "\n")
+	for j, les := range d.Lessons {
+		buf.WriteString(fmt.Sprintf("---%v.%v\n------Время:%v\n------Место:%v\n------Препод.:%v\n",
+			j+1, les.Type, les.Time, les.Place, les.Teacher))
 	}
 	return buf.String()
 }
