@@ -72,7 +72,7 @@ func (tt *Timetable) GetString() string {
 	buf := bytes.Buffer{}
 	buf.WriteString("Расписание на неделю:\n")
 	for _, day := range tt.Days {
-		buf.WriteString(day.Date + "\n")
+		buf.WriteString("__________" + day.Date + "__________\n")
 		for j, les := range day.Lessons {
 			buf.WriteString(fmt.Sprintf("<>%v.%v\n----Время: %v\n----Место: %v\n----Препод.: %v\n",
 				j+1, les.Type, les.Time, les.Place, les.Teacher))
