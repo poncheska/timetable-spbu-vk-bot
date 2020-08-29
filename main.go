@@ -117,6 +117,7 @@ func main() {
 			if flag{
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 					"Ты не зарегистрирован"))
+				continue
 			}
 			tt, err := parser.ParseTimetable(link)
 			if err != err || tt == nil{
