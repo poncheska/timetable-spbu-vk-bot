@@ -217,8 +217,9 @@ func SetJson(grpcAddress string) {
 	client := vault.NewJsonVaultClient(grpcConn)
 
 	res, _ := client.Get(context.Background(), &vault.Nothing{})
-
-	ioutil.WriteFile(UsersFilename, res.Data, os.FileMode(int(0777)))
+	if res.Data != nil {
+		ioutil.WriteFile(UsersFilename, res.Data, os.FileMode(int(0777)))
+	}
 }
 
 func PushJson(grpcAddress string) {
