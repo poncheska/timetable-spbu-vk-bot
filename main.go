@@ -130,7 +130,9 @@ func main() {
 			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 				"Расписание на неделю:\n"))
 			for _, d := range tt.Days{
-				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID), d.GetString()))
+				for _, str := range d.GetString() {
+					client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID), str))
+				}
 			}
 
 
