@@ -82,8 +82,7 @@ func main() {
 						"Файл "+usersFilename+" недоступен!!!\n"+err.Error()))
 					continue
 				}
-				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
-					fmt.Sprintf("json: \n%v\n struct: \n%v\n", string(bytes), users.Users)))
+				client.SendDoc(vkapi.NewDstFromUserID(update.Message.FromID),"users", "users.json")
 			} else {
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 					"Ты не админ("))
