@@ -105,6 +105,7 @@ func main() {
 			}
 
 		case update.Message.Text == "/tt":
+			log.Println(cap(users.Users), len(users.Users))
 			flag := true
 			link := ""
 			if len(users.Users) == 0{
