@@ -95,5 +95,6 @@ func (d Day) GetString() []string {
 			j+1, les.Type, les.Time, les.Place, les.Teacher))
 		counter++
 	}
+	res = append(res, buf.String())
 	return res
 }
