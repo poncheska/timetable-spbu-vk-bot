@@ -87,7 +87,7 @@ func (d Day) GetString() []string {
 	counter := 0
 	buf.WriteString("________" + d.Date + "________\n")
 	for j, les := range d.Lessons {
-		if counter == 4 {
+		if counter == 3 {
 			res = append(res, buf.String())
 			buf = bytes.Buffer{}
 			counter = 0
