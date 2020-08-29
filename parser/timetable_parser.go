@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/gocolly/colly"
+	"net/http"
 	"regexp"
 )
 
@@ -60,7 +61,9 @@ func ParseTimetable(link string) (*Timetable, error) {
 		tt.Days = append(tt.Days, d)
 	})
 
-	err := c.Visit(link)
+	header := http.Header{}
+	header.Set("Accept-Language", "ru")
+	err := c.Request("GET", link, nil, nil, header)
 
 	return tt, err
 }
