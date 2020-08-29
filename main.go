@@ -1,18 +1,14 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	vkapi "github.com/Dimonchik0036/vk-api"
-	"google.golang.org/grpc"
 	"io/ioutil"
 	"log"
 	"os"
 	"regexp"
 	"sync"
-	"time"
 	"vk-timetable-bot/parser"
-	"vk-timetable-bot/vault"
 )
 
 type TimetableUser struct {
@@ -33,7 +29,7 @@ var (
 const UsersFilename = "users.json"
 
 func main() {
-	addr := os.Getenv("GRPC_ADDR")
+	//addr := os.Getenv("GRPC_ADDR")
 	//client, err := vkapi.NewClientFromLogin("<username>", "<password>", vkapi.ScopeMessages)
 	client, err := vkapi.NewClientFromToken(os.Getenv("BOT_TOKEN"))
 	if err != nil {
@@ -51,10 +47,10 @@ func main() {
 		log.Panic(err)
 	}
 
-	SetJson(addr)
+	//SetJson(addr)
 	users := GetUsers()
 
-	go JsonPusher(addr)
+	//go JsonPusher(addr)
 
 	for update := range updates {
 		if update.Message == nil || !update.IsNewMessage() || update.Message.Outbox() {
@@ -205,42 +201,42 @@ func StringStartsFrom(str, beg string) bool {
 	}
 }
 
-// grpc functions
-func SetJson(grpcAddress string) {
-	grpcConn, err := grpc.Dial(grpcAddress, grpc.WithInsecure())
-	if err != nil {
-		panic(err)
-	}
-
-	defer grpcConn.Close()
-
-	client := vault.NewJsonVaultClient(grpcConn)
-
-	res, _ := client.Get(context.Background(), &vault.Nothing{})
-	if res != nil {
-		ioutil.WriteFile(UsersFilename, res.Data, os.FileMode(int(0777)))
-	}
-}
-
-func PushJson(grpcAddress string) {
-	grpcConn, err := grpc.Dial(grpcAddress, grpc.WithInsecure())
-	if err != nil {
-		panic(err)
-	}
-
-	defer grpcConn.Close()
-
-	client := vault.NewJsonVaultClient(grpcConn)
-
-	bytes, _ := ioutil.ReadFile(UsersFilename)
-
-	client.Set(context.Background(), &vault.JsonBytes{Data: bytes})
-}
-
-func JsonPusher(grpcAddres string) {
-	for {
-		time.Sleep(5 * time.Minute)
-		log.Println("GRPC: json pushed")
-		PushJson(grpcAddres)
-	}
-}
+// grpc functions (heroku doesn't support :'( )
+//func SetJson(grpcAddress string) {
+//	grpcConn, err := grpc.Dial(grpcAddress, grpc.WithInsecure())
+//	if err != nil {
+//		panic(err)
+//	}
+//
+//	defer grpcConn.Close()
+//
+//	client := vault.NewJsonVaultClient(grpcConn)
+//
+//	res, _ := client.Get(context.Background(), &vault.Nothing{})
+//	if res != nil {
+//		ioutil.WriteFile(UsersFilename, res.Data, os.FileMode(int(0777)))
+//	}
+//}
+//
+//func PushJson(grpcAddress string) {
+//	grpcConn, err := grpc.Dial(grpcAddress, grpc.WithInsecure())
+//	if err != nil {
+//		panic(err)
+//	}
+//
+//	defer grpcConn.Close()
+//
+//	client := vault.NewJsonVaultClient(grpcConn)
+//
+//	bytes, _ := ioutil.ReadFile(UsersFilename)
+//
+//	client.Set(context.Background(), &vault.JsonBytes{Data: bytes})
+//}
+//
+//func JsonPusher(grpcAddres string) {
+//	for {
+//		time.Sleep(5 * time.Minute)
+//		log.Println("GRPC: json pushed")
+//		PushJson(grpcAddres)
+//	}
+//}
