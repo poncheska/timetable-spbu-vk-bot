@@ -1,8 +1,10 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	vkapi "github.com/Dimonchik0036/vk-api"
+	_ "github.com/go-sql-driver/mysql"
 	"io/ioutil"
 	"log"
 	"os"
@@ -26,13 +28,14 @@ var (
 	adminId   = int64(102727269)
 )
 
-const UsersFilename = "users.json"
+const (
+	UsersFilename = "users.json"
+	ConnString    = "u7AxuyYlkB:HeXbIWd51j@tcp(remotemysql.com:3306)/u7AxuyYlkB"
+)
 
 func main() {
 	//addr := os.Getenv("GRPC_ADDR")
 	//client, err := vkapi.NewClientFromLogin("<username>", "<password>", vkapi.ScopeMessages)
-
-
 
 	client, err := vkapi.NewClientFromToken(os.Getenv("BOT_TOKEN"))
 	if err != nil {
@@ -154,16 +157,33 @@ func main() {
 
 func GetUsers() *TimetableUsers {
 	users := &TimetableUsers{Users: make([]TimetableUser, 0, 0)}
-	bytes, err := ioutil.ReadFile(UsersFilename)
+	conn := DBConnection()
+	defer conn.Close()
+
+	rows, err := conn.Query("SELECT * FROM Users")
 	if err != nil {
-		log.Println("GetUsers: " + err.Error())
-		return users
+		panic(err)
 	}
-	err = json.Unmarshal(bytes, users)
-	if err != nil {
-		log.Println("GetUsers: " + err.Error())
-		return users
+	defer rows.Close()
+
+	for rows.Next() {
+		tu := TimetableUser{}
+		err = rows.Scan(&tu.ID, &tu.TTLink)
+		if err != nil {
+			panic(err)
+		}
+		users.Users = append(users.Users, tu)
 	}
+	//bytes, err := ioutil.ReadFile(UsersFilename)
+	//if err != nil {
+	//	log.Println("GetUsers: " + err.Error())
+	//	return users
+	//}
+	//err = json.Unmarshal(bytes, users)
+	//if err != nil {
+	//	log.Println("GetUsers: " + err.Error())
+	//	return users
+	//}
 	return users
 }
 
@@ -179,16 +199,32 @@ func (tu *TimetableUsers) SetUsers() {
 }
 
 func (tu *TimetableUsers) AddUser(id int64, link string) {
-	for i, u := range tu.Users {
-		if u.ID == id {
-			tu.Users[i] = tu.Users[len(tu.Users)-1]
-			tu.Users = tu.Users[:len(tu.Users)-1]
+	conn := DBConnection()
+	defer conn.Close()
+
+	_, err := conn.Query("SELECT * FROM Users WHERE id = ?;", id)
+	if err == nil {
+		_, err := conn.Exec("UPDATE Users SET link = ? WHERE id = ?;", link, id)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		_, err := conn.Exec("INSERT INTO Users (id, link) VALUES (?,?);", link, id)
+		if err != nil {
+			panic(err)
 		}
 	}
-	tu.Mu.Lock()
-	tu.Users = append(tu.Users, TimetableUser{id, link})
-	tu.SetUsers()
-	tu.Mu.Unlock()
+
+	//for i, u := range tu.Users {
+	//	if u.ID == id {
+	//		tu.Users[i] = tu.Users[len(tu.Users)-1]
+	//		tu.Users = tu.Users[:len(tu.Users)-1]
+	//	}
+	//}
+	//tu.Mu.Lock()
+	//tu.Users = append(tu.Users, TimetableUser{id, link})
+	//tu.SetUsers()
+	//tu.Mu.Unlock()
 }
 
 func StringStartsFrom(str, beg string) bool {
@@ -202,6 +238,14 @@ func StringStartsFrom(str, beg string) bool {
 		}
 		return true
 	}
+}
+
+func DBConnection() *sql.DB {
+	conn, err := sql.Open("mysql", ConnString)
+	if err != nil {
+		panic(err)
+	}
+	return conn
 }
 
 // grpc functions (heroku doesn't support :'( )
