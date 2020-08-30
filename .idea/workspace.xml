@@ -81,7 +81,8 @@
     <MESSAGE value="GRPC vault frozen" />
     <MESSAGE value="add postgres" />
     <MESSAGE value="add MySQL" />
-    <option name="LAST_COMMIT_MESSAGE" value="add MySQL" />
+    <MESSAGE value="add SQL delete func" />
+    <option name="LAST_COMMIT_MESSAGE" value="add SQL delete func" />
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>
@@ -91,10 +92,10 @@
       <screen x="67" y="34" width="1853" height="1046" />
     </state>
     <state x="697" y="358" width="583" height="396" key="#com.intellij.fileTypes.FileTypeChooser/67.34.1853.1046@67.34.1853.1046" timestamp="1598570961878" />
-    <state x="461" y="34" width="912" height="904" key="CommitChangelistDialog2" timestamp="1598804266221">
+    <state x="461" y="34" width="912" height="904" key="CommitChangelistDialog2" timestamp="1598808311207">
       <screen x="67" y="34" width="1853" height="1046" />
     </state>
-    <state x="461" y="34" width="912" height="904" key="CommitChangelistDialog2/67.34.1853.1046@67.34.1853.1046" timestamp="1598804266221" />
+    <state x="461" y="34" width="912" height="904" key="CommitChangelistDialog2/67.34.1853.1046@67.34.1853.1046" timestamp="1598808311207" />
     <state x="776" y="314" width="424" height="484" key="FileChooserDialogImpl" timestamp="1598788227985">
       <screen x="67" y="34" width="1853" height="1046" />
     </state>
@@ -119,10 +120,10 @@
       <screen x="67" y="34" width="1853" height="1046" />
     </state>
     <state x="767" y="239" width="442" height="633" key="RollbackChangesDialog/67.34.1853.1046@67.34.1853.1046" timestamp="1598729145197" />
-    <state x="588" y="292" width="800" height="528" key="Vcs.Push.Dialog.v2" timestamp="1598804268226">
+    <state x="588" y="292" width="800" height="528" key="Vcs.Push.Dialog.v2" timestamp="1598808315480">
       <screen x="67" y="34" width="1853" height="1046" />
     </state>
-    <state x="588" y="292" width="800" height="528" key="Vcs.Push.Dialog.v2/67.34.1853.1046@67.34.1853.1046" timestamp="1598804268226" />
+    <state x="588" y="292" width="800" height="528" key="Vcs.Push.Dialog.v2/67.34.1853.1046@67.34.1853.1046" timestamp="1598808315480" />
     <state x="705" y="445" width="567" height="221" key="git4idea.remote.GitConfigureRemotesDialog" timestamp="1598725865415">
       <screen x="67" y="34" width="1853" height="1046" />
     </state>

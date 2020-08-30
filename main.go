@@ -2,10 +2,10 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	vkapi "github.com/Dimonchik0036/vk-api"
 	_ "github.com/go-sql-driver/mysql"
-	"io/ioutil"
 	"log"
 	"os"
 	"regexp"
@@ -82,11 +82,11 @@ func main() {
 			}
 			users.AddUser(update.Message.FromID, update.Message.Text[5:])
 			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
-				"Alright!"))
+				"Ты зарегестрирован!"))
 
 		case update.Message.Text == "/users":
 			if update.Message.FromID == adminId {
-				bytes, err := ioutil.ReadFile(UsersFilename)
+				bytes, err := json.Marshal(users)
 				if err != nil {
 					client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
 						"Файл "+UsersFilename+" недоступен!!!\n"+err.Error()))
@@ -99,23 +99,32 @@ func main() {
 					"Ты не админ(("))
 			}
 
-		case StringStartsFrom(update.Message.Text, "/load"):
-			if update.Message.FromID == adminId {
-				jsn := update.Message.Text[6:]
-				err := ioutil.WriteFile(UsersFilename, []byte(jsn), os.FileMode(int(0777)))
-				if err != nil {
-					log.Println("load: " + err.Error())
-				}
-				users = GetUsers()
+		//case StringStartsFrom(update.Message.Text, "/load"):
+		//	if update.Message.FromID == adminId {
+		//		jsn := update.Message.Text[6:]
+		//		err := ioutil.WriteFile(UsersFilename, []byte(jsn), os.FileMode(int(0777)))
+		//		if err != nil {
+		//			log.Println("load: " + err.Error())
+		//		}
+		//		users = GetUsers()
+		//		client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
+		//			"Юзеры загружены"))
+		//	} else {
+		//		client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
+		//			"Ты не админ(("))
+		//	}
+
+		case update.Message.Text == "/unreg":
+			err := users.DeleteUser(update.Message.FromID)
+			if err != nil {
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
-					"Юзеры загружены"))
+					"Ты не был зарегестрирован!"))
 			} else {
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
-					"Ты не админ(("))
+					"Регистрация отменена!"))
 			}
 
 		case update.Message.Text == "/tt":
-			log.Println(cap(users.Users), len(users.Users))
 			flag := true
 			link := ""
 			for _, u := range users.Users {
@@ -149,7 +158,7 @@ func main() {
 
 		default:
 			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
-				"Я тебя не понял или ты быканул!?"))
+				"Я тебя не понял или ты быканул!?(Напиши \"/info\")"))
 		}
 
 	}
@@ -199,7 +208,7 @@ func GetUsers() *TimetableUsers {
 //	}
 //}
 
-func (tu *TimetableUsers) DeleteUser(id int64, link string) {
+func (tu *TimetableUsers) DeleteUser(id int64) error {
 	conn := DBConnection()
 	defer conn.Close()
 
@@ -220,6 +229,7 @@ func (tu *TimetableUsers) DeleteUser(id int64, link string) {
 		log.Println(fmt.Sprintf("DELETE: ID:%v", id))
 	} else {
 		log.Println(fmt.Sprintf("DELETE: NOTHING TO DELETE"))
+		return fmt.Errorf("not registered")
 	}
 
 	for i, u := range tu.Users {
@@ -228,6 +238,7 @@ func (tu *TimetableUsers) DeleteUser(id int64, link string) {
 			tu.Users = tu.Users[:len(tu.Users)-1]
 		}
 	}
+	return nil
 }
 
 func (tu *TimetableUsers) AddUser(id int64, link string) {
