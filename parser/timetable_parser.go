@@ -69,6 +69,8 @@ func ParseTimetable(link string) (*Timetable, error) {
 		tt.Days = append(tt.Days, d)
 	})
 
+	log.Println(correct)
+
 	if len(correct) != 0 {
 		return nil, NewParseError("Расписание не корректно (не все поля заполнены...)")
 	}
