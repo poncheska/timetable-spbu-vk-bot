@@ -204,6 +204,9 @@ func (tu *TimetableUsers) AddUser(id int64, link string) {
 	defer conn.Close()
 
 	rows, err := conn.Query("SELECT * FROM u7AxuyYlkB.Users WHERE id = ?;", id)
+	if err != nil {
+		panic(err)
+	}
 	defer rows.Close()
 	count := 0
 	for rows.Next() {
