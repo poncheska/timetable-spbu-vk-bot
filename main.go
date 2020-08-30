@@ -2,7 +2,7 @@ package main
 
 import (
 	"database/sql"
-	"encoding/json"
+	"fmt"
 	vkapi "github.com/Dimonchik0036/vk-api"
 	_ "github.com/go-sql-driver/mysql"
 	"io/ioutil"
@@ -174,6 +174,7 @@ func GetUsers() *TimetableUsers {
 		}
 		users.Users = append(users.Users, tu)
 	}
+	log.Println("UPLOAD USERS")
 	//bytes, err := ioutil.ReadFile(UsersFilename)
 	//if err != nil {
 	//	log.Println("GetUsers: " + err.Error())
@@ -187,16 +188,16 @@ func GetUsers() *TimetableUsers {
 	return users
 }
 
-func (tu *TimetableUsers) SetUsers() {
-	bytes, err := json.MarshalIndent(tu, "", "\t")
-	if err != nil {
-		log.Println("SetUsers: " + err.Error())
-	}
-	err = ioutil.WriteFile(UsersFilename, bytes, os.FileMode(int(0777)))
-	if err != nil {
-		log.Println("SetUsers: " + err.Error())
-	}
-}
+//func (tu *TimetableUsers) SetUsers() {
+//	bytes, err := json.MarshalIndent(tu, "", "\t")
+//	if err != nil {
+//		log.Println("SetUsers: " + err.Error())
+//	}
+//	err = ioutil.WriteFile(UsersFilename, bytes, os.FileMode(int(0777)))
+//	if err != nil {
+//		log.Println("SetUsers: " + err.Error())
+//	}
+//}
 
 func (tu *TimetableUsers) AddUser(id int64, link string) {
 	conn := DBConnection()
@@ -208,11 +209,13 @@ func (tu *TimetableUsers) AddUser(id int64, link string) {
 		if err != nil {
 			panic(err)
 		}
+		log.Println(fmt.Sprintf("UPDATE: ID:%v", id))
 	} else {
 		_, err := conn.Exec("INSERT INTO Users (id, link) VALUES (?,?);", link, id)
 		if err != nil {
 			panic(err)
 		}
+		log.Println(fmt.Sprintf("CREATE: ID:%v", id))
 	}
 
 	//for i, u := range tu.Users {
