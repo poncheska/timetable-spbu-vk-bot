@@ -10,6 +10,7 @@ import (
 	"os"
 	"regexp"
 	"sync"
+	"time"
 	"vk-timetable-bot/parser"
 )
 
@@ -55,8 +56,9 @@ func main() {
 
 	//SetJson(addr)
 	users := GetUsers()
-
 	//go JsonPusher(addr)
+
+	go TTNotification(users, client)
 
 	for update := range updates {
 		if update.Message == nil || !update.IsNewMessage() || update.Message.Outbox() {
@@ -68,11 +70,12 @@ func main() {
 		switch {
 		case update.Message.Text == "/info":
 			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
-				"Для регистрации введите \"/reg https://timetable.spbu.ru/...\"\n"+
+				">> Для регистрации введите \"/reg https://timetable.spbu.ru/...\"\n"+
 					"(где ссылка указывает на расписание на текущую неделю\n"+
 					"и не должна содержать дату на конце, пример ссылки:\n"+
 					"\"https://timetable.spbu.ru/CHEM/StudentGroupEvents/Primary/276448\".)\n"+
-					"После регестрации используй \"/tt\" для получения расписания."))
+					">> После регестрации используй \"/tt\" для получения расписания.\n"+
+					">> Отмена регистрации \"/unreg\""))
 
 		case StringStartsFrom(update.Message.Text, "/reg"):
 			if !regRegexp.MatchString(update.Message.Text) {
@@ -278,6 +281,28 @@ func (tu *TimetableUsers) AddUser(id int64, link string) {
 	//tu.Mu.Lock()
 	//tu.SetUsers()
 	//tu.Mu.Unlock()
+}
+
+func TTNotification(users *TimetableUsers, client *vkapi.Client) {
+	for {
+		for _, u := range users.Users {
+			tt, err := parser.ParseTimetable(u.TTLink)
+			if err != nil {
+				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(u.ID),
+					err.Error()))
+				continue
+			}
+			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(u.ID),
+				"Расписание на неделю:\n"))
+			for _, d := range tt.Days {
+				strings := d.GetString()
+				for _, str := range strings {
+					client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(u.ID), str))
+				}
+			}
+		}
+		time.Sleep(time.Minute)
+	}
 }
 
 func StringStartsFrom(str, beg string) bool {
