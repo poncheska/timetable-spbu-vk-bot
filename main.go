@@ -31,6 +31,9 @@ const UsersFilename = "users.json"
 func main() {
 	//addr := os.Getenv("GRPC_ADDR")
 	//client, err := vkapi.NewClientFromLogin("<username>", "<password>", vkapi.ScopeMessages)
+
+
+
 	client, err := vkapi.NewClientFromToken(os.Getenv("BOT_TOKEN"))
 	if err != nil {
 		log.Panic(err)
