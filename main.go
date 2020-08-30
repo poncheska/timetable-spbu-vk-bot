@@ -285,23 +285,27 @@ func (tu *TimetableUsers) AddUser(id int64, link string) {
 
 func TTNotification(users *TimetableUsers, client *vkapi.Client) {
 	for {
-		for _, u := range users.Users {
-			tt, err := parser.ParseTimetable(u.TTLink)
-			if err != nil {
+		if time.Now().Weekday() == time.Monday && time.Now().Hour() > 2 {
+			for _, u := range users.Users {
+				tt, err := parser.ParseTimetable(u.TTLink)
+				if err != nil {
+					client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(u.ID),
+						err.Error()))
+					continue
+				}
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(u.ID),
-					err.Error()))
-				continue
-			}
-			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(u.ID),
-				"Расписание на неделю:\n"))
-			for _, d := range tt.Days {
-				strings := d.GetString()
-				for _, str := range strings {
-					client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(u.ID), str))
+					"Расписание на неделю:\n"))
+				for _, d := range tt.Days {
+					strings := d.GetString()
+					for _, str := range strings {
+						client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(u.ID), str))
+					}
 				}
 			}
+			time.Sleep(25 * time.Hour)
+		} else {
+			time.Sleep(time.Hour)
 		}
-		time.Sleep(time.Minute)
 	}
 }
 
