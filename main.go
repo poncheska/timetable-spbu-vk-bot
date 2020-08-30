@@ -219,7 +219,7 @@ func (tu *TimetableUsers) AddUser(id int64, link string) {
 		}
 		log.Println(fmt.Sprintf("UPDATE: ID:%v", id))
 	} else {
-		_, err := conn.Exec("INSERT INTO u7AxuyYlkB.Users (id, link) VALUES (?,?);", link, id)
+		_, err := conn.Exec("INSERT INTO u7AxuyYlkB.Users (id, link) VALUES (?,?);", id, link)
 		if err != nil {
 			panic(err)
 		}
