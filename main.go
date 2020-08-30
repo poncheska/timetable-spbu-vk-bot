@@ -199,6 +199,37 @@ func GetUsers() *TimetableUsers {
 //	}
 //}
 
+func (tu *TimetableUsers) DeleteUser(id int64, link string) {
+	conn := DBConnection()
+	defer conn.Close()
+
+	rows, err := conn.Query("SELECT * FROM u7AxuyYlkB.Users WHERE id = ?;", id)
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+	count := 0
+	for rows.Next() {
+		count++
+	}
+	if count != 0 {
+		_, err := conn.Exec("DELETE FROM u7AxuyYlkB.Users WHERE id = ?;", id)
+		if err != nil {
+			panic(err)
+		}
+		log.Println(fmt.Sprintf("DELETE: ID:%v", id))
+	} else {
+		log.Println(fmt.Sprintf("DELETE: NOTHING TO DELETE"))
+	}
+
+	for i, u := range tu.Users {
+		if u.ID == id {
+			tu.Users[i] = tu.Users[len(tu.Users)-1]
+			tu.Users = tu.Users[:len(tu.Users)-1]
+		}
+	}
+}
+
 func (tu *TimetableUsers) AddUser(id int64, link string) {
 	conn := DBConnection()
 	defer conn.Close()
