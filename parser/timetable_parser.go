@@ -43,8 +43,7 @@ func ParseTimetable(link string) (*Timetable, error) {
 	c := colly.NewCollector()
 
 	tt := &Timetable{make([]Day, 0, 0)}
-	correct := new(bool)
-	*correct = true
+	correct := make([]byte, 0, 0)
 
 	c.OnHTML("div.panel-group div.panel-default", func(e *colly.HTMLElement) {
 		times := regexNotSpace.FindAllString(e.DOM.Find("div.panel-default > ul.panel-collapse > li.row > "+
@@ -59,7 +58,7 @@ func ParseTimetable(link string) (*Timetable, error) {
 		d := Day{date, make([]Lesson, 0, 0)}
 		if len(times) != len(types) || len(times) != len(places) || len(times) != len(teachers) {
 			log.Println("TIMETABLE INCORRECT")
-			*correct = false
+			correct = append(correct, 0)
 			return
 		}
 		for i, _ := range times {
@@ -69,7 +68,7 @@ func ParseTimetable(link string) (*Timetable, error) {
 		tt.Days = append(tt.Days, d)
 	})
 
-	if !*correct {
+	if len(correct) != 0 {
 		return nil, NewParseError("Расписание не корректно (не все поля заполнены...)")
 	}
 
