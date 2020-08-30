@@ -160,7 +160,7 @@ func GetUsers() *TimetableUsers {
 	conn := DBConnection()
 	defer conn.Close()
 
-	rows, err := conn.Query("SELECT * FROM Users")
+	rows, err := conn.Query("SELECT * FROM u7AxuyYlkB.Users")
 	if err != nil {
 		panic(err)
 	}
@@ -203,29 +203,29 @@ func (tu *TimetableUsers) AddUser(id int64, link string) {
 	conn := DBConnection()
 	defer conn.Close()
 
-	_, err := conn.Query("SELECT * FROM Users WHERE id = ?;", id)
+	_, err := conn.Query("SELECT * FROM u7AxuyYlkB.Users WHERE id = ?;", id)
 	if err == nil {
-		_, err := conn.Exec("UPDATE Users SET link = ? WHERE id = ?;", link, id)
+		_, err := conn.Exec("UPDATE u7AxuyYlkB.Users SET link = ? WHERE id = ?;", link, id)
 		if err != nil {
 			panic(err)
 		}
 		log.Println(fmt.Sprintf("UPDATE: ID:%v", id))
 	} else {
-		_, err := conn.Exec("INSERT INTO Users (id, link) VALUES (?,?);", link, id)
+		_, err := conn.Exec("INSERT INTO u7AxuyYlkB.Users (id, link) VALUES (?,?);", link, id)
 		if err != nil {
 			panic(err)
 		}
 		log.Println(fmt.Sprintf("CREATE: ID:%v", id))
 	}
 
-	//for i, u := range tu.Users {
-	//	if u.ID == id {
-	//		tu.Users[i] = tu.Users[len(tu.Users)-1]
-	//		tu.Users = tu.Users[:len(tu.Users)-1]
-	//	}
-	//}
+	for i, u := range tu.Users {
+		if u.ID == id {
+			tu.Users[i] = tu.Users[len(tu.Users)-1]
+			tu.Users = tu.Users[:len(tu.Users)-1]
+		}
+	}
+	tu.Users = append(tu.Users, TimetableUser{id, link})
 	//tu.Mu.Lock()
-	//tu.Users = append(tu.Users, TimetableUser{id, link})
 	//tu.SetUsers()
 	//tu.Mu.Unlock()
 }
