@@ -203,8 +203,13 @@ func (tu *TimetableUsers) AddUser(id int64, link string) {
 	conn := DBConnection()
 	defer conn.Close()
 
-	_, err := conn.Query("SELECT * FROM u7AxuyYlkB.Users WHERE id = ?;", id)
-	if err == nil {
+	rows, err := conn.Query("SELECT * FROM u7AxuyYlkB.Users WHERE id = ?;", id)
+	defer rows.Close()
+	count := 0
+	for rows.Next() {
+		count++
+	}
+	if count != 0 {
 		_, err := conn.Exec("UPDATE u7AxuyYlkB.Users SET link = ? WHERE id = ?;", link, id)
 		if err != nil {
 			panic(err)
