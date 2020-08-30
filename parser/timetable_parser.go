@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/gocolly/colly"
+	"log"
 	"net/http"
 	"regexp"
 )
@@ -57,6 +58,7 @@ func ParseTimetable(link string) (*Timetable, error) {
 		date := regexNotSpace.FindString(e.DOM.Find("div.panel-default > div.panel-heading").Text())
 		d := Day{date, make([]Lesson, 0, 0)}
 		if len(times) != len(types) || len(times) != len(places) || len(times) != len(teachers) {
+			log.Println("TIMETABLE INCORRECT")
 			*correct = false
 			return
 		}
