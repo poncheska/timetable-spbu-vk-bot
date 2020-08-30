@@ -59,6 +59,7 @@ func ParseTimetable(link string) (*Timetable, error) {
 		if len(times) != len(types) || len(times) != len(places) || len(times) != len(teachers) {
 			log.Println("TIMETABLE INCORRECT")
 			correct = append(correct, 0)
+			log.Println(correct)
 			return
 		}
 		for i, _ := range times {
