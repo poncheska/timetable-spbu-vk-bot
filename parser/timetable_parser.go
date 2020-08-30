@@ -30,7 +30,7 @@ type ParseError struct {
 	s string
 }
 
-func New(text string) error {
+func NewParseError(text string) error {
 	return &ParseError{text}
 }
 
@@ -54,12 +54,20 @@ func ParseTimetable(link string) (*Timetable, error) {
 			"div:nth-child(4) div:nth-child(2)").Text(), -1)
 		date := regexNotSpace.FindString(e.DOM.Find("div.panel-default > div.panel-heading").Text())
 		d := Day{date, make([]Lesson, 0, 0)}
+		if len(times) != len(types) || len(times) != len(places) || len(times) != len(teachers) {
+			tt = nil
+			return
+		}
 		for i, _ := range times {
 			l := Lesson{times[i], types[i], places[i], teachers[i]}
 			d.Lessons = append(d.Lessons, l)
 		}
 		tt.Days = append(tt.Days, d)
 	})
+
+	if tt == nil {
+		return nil, NewParseError("Расписание не корректно (не все поля заполнены...)")
+	}
 
 	header := http.Header{"User-Agent": []string{c.UserAgent}}
 	header.Set("Accept-Language", "ru")

@@ -133,9 +133,9 @@ func main() {
 				continue
 			}
 			tt, err := parser.ParseTimetable(link)
-			if err != nil || tt == nil {
+			if err != nil {
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
-					"Что-то не так с твоей ссылкой зарегистрируйся заново"))
+					err.Error()))
 				continue
 			}
 			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
