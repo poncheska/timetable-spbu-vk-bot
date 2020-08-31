@@ -103,7 +103,9 @@ func (d Day) GetString() []string {
 			buf = bytes.Buffer{}
 			counter = 0
 		}
-		buf.WriteString(fmt.Sprintf("<>%v.%v\n----Время:%v\n----Место: %v\n----Препод.: %v\n",
+		buf.WriteString(fmt.Sprintf("&#128315%v.%v\n&#128311&#128311&#128311Время:%v"+
+			"\n&#128311&#128311&#128311Место: %v"+
+			"\n&#128311&#128311&#128311Препод.: %v\n",
 			j+1, les.Type, les.Time, les.Place, les.Teacher))
 		counter++
 	}
