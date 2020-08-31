@@ -25,18 +25,20 @@ type TimetableUsers struct {
 }
 
 var (
-	regRegexp = regexp.MustCompile("^\\/reg https:\\/\\/timetable.spbu.ru\\/\\S+$")
-	adminId   = int64(102727269)
+	regRegexp  = regexp.MustCompile("^\\/reg https:\\/\\/timetable.spbu.ru\\/\\S+$")
+	adminId    = int64(102727269)
+	ConnString = ""
 )
 
 const (
 	UsersFilename = "users.json"
-	ConnString    = "u7AxuyYlkB:HeXbIWd51j@tcp(remotemysql.com:3306)/u7AxuyYlkB"
 )
 
 func main() {
 	//addr := os.Getenv("GRPC_ADDR")
 	//client, err := vkapi.NewClientFromLogin("<username>", "<password>", vkapi.ScopeMessages)
+
+	ConnString = os.Getenv("DB_ADDR")
 
 	client, err := vkapi.NewClientFromToken(os.Getenv("BOT_TOKEN"))
 	if err != nil {
@@ -287,7 +289,7 @@ func (tu *TimetableUsers) AddUser(id int64, link string) {
 
 func TTNotification(users *TimetableUsers, client *vkapi.Client) {
 	for {
-		if time.Now().Weekday() == time.Monday && time.Now().Hour() > 2 {
+		if time.Now().Weekday() == time.Sunday && time.Now().Hour() > 11 {
 			for _, u := range users.Users {
 				tt, err := parser.ParseTimetable(u.TTLink)
 				if err != nil {
