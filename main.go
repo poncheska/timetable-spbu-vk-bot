@@ -77,7 +77,7 @@ func main() {
 					"и не должна содержать дату на конце, пример ссылки:\n"+
 					"\"https://timetable.spbu.ru/CHEM/StudentGroupEvents/Primary/276448\".)\n"+
 					"После регистрации расписание будет автоматически отправляться "+
-					"еженедельно утром в понедельник\n"+
+					"еженедельно днём в воскресенье.\n"+
 					">> После регестрации используй \"/tt\" для получения расписания.\n"+
 					">> Отмена регистрации \"/unreg\""))
 
@@ -145,7 +145,7 @@ func main() {
 			}
 			if flag {
 				client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
-					"Ты не зарегистрирован"))
+					"Ты не зарегистрирован!"))
 				continue
 			}
 			tt, err := parser.ParseTimetable(link)
@@ -165,7 +165,7 @@ func main() {
 
 		default:
 			client.SendMessage(vkapi.NewMessage(vkapi.NewDstFromUserID(update.Message.FromID),
-				"Я тебя не понял или ты быканул!?(Напиши \"/info\")"))
+				"Я тебя не понял или ты быканул!? (Напиши \"/info\")"))
 		}
 
 	}
